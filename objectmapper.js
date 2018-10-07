@@ -117,8 +117,18 @@ module.exports = class ObjectMapper {
 
 		for (var i = 0; i < this.mappings.length; i++) {
 			var mapping = this.mappings[i];
-			var value = propertyFromObject(this.srcObj, mapping.src);
-			propertyIntoObject(destObj, mapping.dest, value);
+			var value = null;
+
+			if (typeof mapping.src === 'string' || mapping.src instanceof String) {
+				value = propertyFromObject(this.srcObj, mapping.src);
+			} else {
+				//Call the function
+				value = mapping.src(this.srcObj, destObj)
+			}
+
+			if (value != null) {
+				propertyIntoObject(destObj, mapping.dest, value);
+			} 
 		}
 		return destObj;
 	}

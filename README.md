@@ -21,9 +21,14 @@ ObjectMapper.From(src)
 
 Map method adds the mapping (source,dest) to the current mapper and returns the mapper.
 
+The source of a mapping can be either a string denoting the path into the src object, or a function. In the case of a function, the mapper will call the function passing in the source object as the only parameter.
+
 ```javascript
 	.Map("name", "fullname")
 	.Map("dob.day", "my.dayofbirth")
+	.Map((src) => {
+		return src.age * 2;
+	}, "age")
 ```
 
 4. Execute the mapping:
@@ -51,6 +56,9 @@ Only properties supplied in the map commands will be changed. all other properti
 ObjectMapper.From(src)
 	.Map("name", "fullname")
 	.Map("dob.day", "my.dayofbirth")
+	.Map((src) => {
+		return src.age * 2;
+	}, "age")
 	.Update(dest);
 ```
 
@@ -60,12 +68,15 @@ ObjectMapper.From(src)
 var res = ObjectMapper.From(src)
 	.Map("name", "fullname")
 	.Map("dob.day", "my.dayofbirth")
+	.Map((src) => {
+		return src.age * 2;
+	}, "age")
 	.ToNewObject();
 ```
 
 ### Using an object to supply mappings
 
-Mappings are generated based on the supplied object. Dest shape matches the template, the source locations are the template values.
+Mappings are generated based on the supplied object. Destination object shape matches the template, the source locations are the template values. You can chain Map() and MapTemplate() calls to map a function.
 
 ```javascript
 var res2 = ObjectMapper.From(src)
@@ -75,6 +86,9 @@ var res2 = ObjectMapper.From(src)
 			dayofbirth: "dob.day" 
 		}
 	})
+	.Map((src) => {
+		return src.age * 2;
+	}, "age")
 	.ToNewObject();		//or .Update()
 ```
 
